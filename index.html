@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel F1 Manager 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- TELA DE CRIAÇÃO DE EQUIPE -->
+    <div id="setup-screen" class="screen active">
+        <div class="retro-box">
+            <h1>PIXEL F1 MANAGER <span class="badge">2026</span></h1>
+            <p class="subtitle">CRIE SUA 12ª EQUIPE NO GRID MUNDIAL</p>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>NOME DA ESCUDERIA:</label>
+                    <input type="text" id="team-name" value="BRAZIL RACING" maxlength="16">
+                </div>
+
+                <div class="input-group">
+                    <label>COR PRIMÁRIA:</label>
+                    <input type="color" id="primary-color" value="#00e676">
+                </div>
+
+                <div class="input-group">
+                    <label>COR SECUNDÁRIA:</label>
+                    <input type="color" id="secondary-color" value="#ffea00">
+                </div>
+
+                <div class="input-group">
+                    <label>MOTOR (PU 2026):</label>
+                    <select id="engine-select">
+                        <option value="ferrari">Ferrari (+Potência)</option>
+                        <option value="mercedes">Mercedes (+Confiabilidade)</option>
+                        <option value="honda">Honda (+Velocidade Ponta)</option>
+                        <option value="audi">Audi (+Aceleração)</option>
+                        <option value="rbpt">Ford RBPT (+Equilíbrio)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>PILOTO 1 (LÍDER):</label>
+                    <input type="text" id="driver1-name" value="A. SENNA JR" maxlength="14">
+                </div>
+
+                <div class="input-group">
+                    <label>PILOTO 2:</label>
+                    <input type="text" id="driver2-name" value="G. BORTOLETO" maxlength="14">
+                </div>
+            </div>
+
+            <div class="preview-car">
+                <canvas id="preview-canvas" width="120" height="60"></canvas>
+            </div>
+
+            <button id="start-game-btn" class="retro-btn green">IR PARA O PADDOCK 🏁</button>
+        </div>
+    </div>
+
+    <!-- TELA PRINCIPAL DE CORRIDA E GESTÃO -->
+    <div id="race-screen" class="screen">
+        <!-- BARRA SUPERIOR -->
+        <header class="top-bar">
+            <div class="race-info">
+                <span id="gp-name">GP DE INTERLAGOS</span> | 
+                <span>VOLTA: <strong id="lap-counter">1/15</strong></span> |
+                <span id="weather-status">☀️ SECO (28°C)</span>
+            </div>
+            <div class="speed-controls">
+                <button class="speed-btn active" data-speed="1">1X</button>
+                <button class="speed-btn" data-speed="2">2X</button>
+                <button class="speed-btn" data-speed="4">4X</button>
+            </div>
+        </header>
+
+        <!-- ÁREA CENTRAL: TORRE DE TEMPOS + PISTA 2D -->
+        <main class="main-arena">
+            <!-- TORRE DE CLASSIFICAÇÃO -->
+            <aside class="leaderboard-panel">
+                <h3>CLASSIFICAÇÃO</h3>
+                <ul id="leaderboard-list">
+                    <!-- Preenchido via JS -->
+                </ul>
+            </aside>
+
+            <!-- PISTA PIXEL ART -->
+            <section class="track-container">
+                <canvas id="track-canvas" width="640" height="440"></canvas>
+                <div id="race-banner" class="hidden">BANDEIRA QUADRICULADA!</div>
+            </section>
+        </main>
+
+        <!-- PAINEL INFERIOR: BOXES E TELEMETRIA DOS PILOTOS -->
+        <footer class="pit-wall">
+            <!-- PILOTO 1 -->
+            <div class="driver-card" id="card-d1">
+                <div class="driver-header">
+                    <span class="pos-badge" id="d1-pos">P1</span>
+                    <span class="driver-title" id="d1-name">PILOTO 1</span>
+                    <span class="tyre-badge soft" id="d1-tyre">S</span>
+                </div>
+                
+                <div class="telemetry-bars">
+                    <div class="bar-row">
+                        <span>PNEU:</span>
+                        <div class="progress-bg"><div id="d1-wear-bar" class="progress-fill green" style="width: 100%"></div></div>
+                        <span id="d1-wear-text">100%</span>
+                    </div>
+                    <div class="bar-row">
+                        <span>BATERIA ERS:</span>
+                        <div class="progress-bg"><div id="d1-ers-bar" class="progress-fill blue" style="width: 100%"></div></div>
+                        <span id="d1-ers-text">100%</span>
+                    </div>
+                </div>
+
+                <div class="controls-row">
+                    <label>RITMO:</label>
+                    <button class="pace-btn" data-driver="0" data-pace="conserve">POUPAR</button>
+                    <button class="pace-btn active" data-driver="0" data-pace="normal">NORMAL</button>
+                    <button class="pace-btn" data-driver="0" data-pace="push">ATAQUE</button>
+                </div>
+
+                <div class="controls-row pit-row">
+                    <label>BOXES:</label>
+                    <button class="pit-btn soft" data-driver="0" data-tyre="SOFT">PIT [S]</button>
+                    <button class="pit-btn medium" data-driver="0" data-tyre="MEDIUM">PIT [M]</button>
+                    <button class="pit-btn hard" data-driver="0" data-tyre="HARD">PIT [H]</button>
+                    <span id="d1-pit-status" class="pit-status"></span>
+                </div>
+            </div>
+
+            <!-- LOG DE RÁDIO DA EQUIPE -->
+            <div class="radio-panel">
+                <h3>RÁDIO DO ENGENHEIRO</h3>
+                <div id="radio-log" class="radio-messages">
+                    <p>> Bem-vindo ao Pit Wall! Monitore o desgaste dos pneus.</p>
+                </div>
+                <button id="restart-btn" class="retro-btn small hidden">NOVA CORRIDA</button>
+            </div>
+
+            <!-- PILOTO 2 -->
+            <div class="driver-card" id="card-d2">
+                <div class="driver-header">
+                    <span class="pos-badge" id="d2-pos">P2</span>
+                    <span class="driver-title" id="d2-name">PILOTO 2</span>
+                    <span class="tyre-badge medium" id="d2-tyre">M</span>
+                </div>
+                
+                <div class="telemetry-bars">
+                    <div class="bar-row">
+                        <span>PNEU:</span>
+                        <div class="progress-bg"><div id="d2-wear-bar" class="progress-fill green" style="width: 100%"></div></div>
+                        <span id="d2-wear-text">100%</span>
+                    </div>
+                    <div class="bar-row">
+                        <span>BATERIA ERS:</span>
+                        <div class="progress-bg"><div id="d2-ers-bar" class="progress-fill blue" style="width: 100%"></div></div>
+                        <span id="d2-ers-text">100%</span>
+                    </div>
+                </div>
+
+                <div class="controls-row">
+                    <label>RITMO:</label>
+                    <button class="pace-btn" data-driver="1" data-pace="conserve">POUPAR</button>
+                    <button class="pace-btn active" data-driver="1" data-pace="normal">NORMAL</button>
+                    <button class="pace-btn" data-driver="1" data-pace="push">ATAQUE</button>
+                </div>
+
+                <div class="controls-row pit-row">
+                    <label>BOXES:</label>
+                    <button class="pit-btn soft" data-driver="1" data-tyre="SOFT">PIT [S]</button>
+                    <button class="pit-btn medium" data-driver="1" data-tyre="MEDIUM">PIT [M]</button>
+                    <button class="pit-btn hard" data-driver="1" data-tyre="HARD">PIT [H]</button>
+                    <span id="d2-pit-status" class="pit-status"></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
