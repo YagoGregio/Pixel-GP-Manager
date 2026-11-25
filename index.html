@@ -3,184 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel F1 Manager 2026</title>
+    <title>Pixel F1 Manager 2026 v3.1.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- TELA DE CRIAÇÃO DE EQUIPE -->
+    <!-- ========== TELA DE CRIAÇÃO DE EQUIPE ========== -->
     <div id="setup-screen" class="screen active">
         <div class="retro-box">
-            <h1>PIXEL F1 MANAGER <span class="badge">2026</span></h1>
-            <p class="subtitle">CRIE SUA 12ª EQUIPE NO GRID MUNDIAL</p>
+            <h1>PIXEL F1 MANAGER <span class="badge">2026</span> <span class="ver">v3.1.1</span></h1>
+            <p class="subtitle">ESCOLHA UMA EQUIPE REAL OU CRIE A SUA 12ª</p>
 
             <div class="form-grid">
+                <div class="input-group wide">
+                    <label for="team-select">EQUIPE DO GRID 2026:</label>
+                    <select id="team-select"></select>
+                    <p class="team-info" id="team-info"></p>
+                </div>
                 <div class="input-group">
-                    <label>NOME DA ESCUDERIA:</label>
+                    <label for="team-name">NOME DA ESCUDERIA:</label>
                     <input type="text" id="team-name" value="BRAZIL RACING" maxlength="16">
                 </div>
-
                 <div class="input-group">
-                    <label>COR PRIMÁRIA:</label>
+                    <label for="engine-select">MOTOR (PU 2026):</label>
+                    <select id="engine-select"></select>
+                </div>
+                <div class="input-group">
+                    <label for="primary-color">COR PRIMÁRIA:</label>
                     <input type="color" id="primary-color" value="#00e676">
                 </div>
-
                 <div class="input-group">
-                    <label>COR SECUNDÁRIA:</label>
+                    <label for="secondary-color">COR SECUNDÁRIA:</label>
                     <input type="color" id="secondary-color" value="#ffea00">
                 </div>
-
                 <div class="input-group">
-                    <label>MOTOR (PU 2026):</label>
-                    <select id="engine-select">
-                        <option value="ferrari">Ferrari (+Potência)</option>
-                        <option value="mercedes">Mercedes (+Confiabilidade)</option>
-                        <option value="honda">Honda (+Velocidade Ponta)</option>
-                        <option value="audi">Audi (+Aceleração)</option>
-                        <option value="rbpt">Ford RBPT (+Equilíbrio)</option>
+                    <label for="mode-select">MODO:</label>
+                    <select id="mode-select">
+                        <option value="season">TEMPORADA (10 ETAPAS)</option>
+                        <option value="single">GP ÚNICO</option>
                     </select>
                 </div>
-
                 <div class="input-group">
-                    <label>PILOTO 1 (LÍDER):</label>
-                    <input type="text" id="driver1-name" value="A. SENNA JR" maxlength="14">
+                    <label for="weather-select">CLIMA:</label>
+                    <select id="weather-select">
+                        <option value="random">ALEATÓRIO (POR PISTA)</option>
+                        <option value="dry">SEMPRE SECO</option>
+                        <option value="light">CHUVA FRACA</option>
+                        <option value="heavy">CHUVA FORTE</option>
+                        <option value="starts">COMEÇA A CHOVER</option>
+                        <option value="stops">CHUVA QUE PARA</option>
+                        <option value="shower">PANCADA</option>
+                    </select>
                 </div>
-
+                <div class="input-group" id="gp-group">
+                    <label for="gp-select">GRANDE PRÊMIO:</label>
+                    <select id="gp-select"></select>
+                </div>
                 <div class="input-group">
-                    <label>PILOTO 2:</label>
-                    <input type="text" id="driver2-name" value="G. BORTOLETO" maxlength="14">
+                    <label for="laps-select">VOLTAS:</label>
+                    <select id="laps-select">
+                        <option value="8">8 (RÁPIDA)</option>
+                        <option value="12" selected>12 (PADRÃO)</option>
+                        <option value="15">15</option>
+                        <option value="20">20 (LONGA)</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="preview-car">
-                <canvas id="preview-canvas" width="120" height="60"></canvas>
+            <div class="driver-setup">
+                <div class="driver-setup-col" id="setup-d1">
+                    <div class="input-group">
+                        <label for="driver1-name">PILOTO 1 (LÍDER):</label>
+                        <input type="text" id="driver1-name" value="A. SENNA JR" maxlength="14">
+                    </div>
+                    <div class="face-config" id="face-config-1"></div>
+                </div>
+                <div class="preview-car">
+                    <canvas id="preview-canvas" width="144" height="64"></canvas>
+                    <div class="preview-faces">
+                        <canvas id="preview-face-1" width="24" height="24"></canvas>
+                        <canvas id="preview-face-2" width="24" height="24"></canvas>
+                    </div>
+                </div>
+                <div class="driver-setup-col" id="setup-d2">
+                    <div class="input-group">
+                        <label for="driver2-name">PILOTO 2:</label>
+                        <input type="text" id="driver2-name" value="T. MOURA" maxlength="14">
+                    </div>
+                    <div class="face-config" id="face-config-2"></div>
+                </div>
             </div>
 
-            <button id="start-game-btn" class="retro-btn green">IR PARA O PADDOCK 🏁</button>
+            <div class="modal-actions">
+                <button id="start-game-btn" class="retro-btn green">IR PARA O PADDOCK 🏁</button>
+                <button id="continue-btn" class="retro-btn hidden">CONTINUAR TEMPORADA ▶</button>
+            </div>
+            <p class="hint" id="continue-info"></p>
+            <p class="hint">DICA: AS 3 TELAS DE PNEU, RITMO E BOX TÊM ATALHOS NO TECLADO (VEJA NA CORRIDA).</p>
         </div>
     </div>
 
-    <!-- TELA PRINCIPAL DE CORRIDA E GESTÃO -->
+    <!-- ========== CLASSIFICAÇÃO ========== -->
+    <div id="quali-screen" class="screen">
+        <div class="retro-box wide-box">
+            <h2 id="q-title">CLASSIFICAÇÃO</h2>
+            <p class="subtitle" id="q-sub"></p>
+            <div class="q-controls" id="q-controls"></div>
+            <div class="q-table-wrap"><table id="q-table"></table></div>
+            <div class="modal-actions">
+                <button id="q-run" class="retro-btn green small-btn">RODAR Q1</button>
+                <button id="q-skip" class="retro-btn small-btn">RESOLVER TUDO</button>
+                <button id="q-go" class="retro-btn green small-btn hidden">IR PARA A LARGADA ▶</button>
+                <button id="q-menu" class="retro-btn small-btn">MENU</button>
+            </div>
+            <p class="hint">CADA PILOTO FAZ 2 VOLTAS RÁPIDAS POR SESSÃO. ATAQUE = MAIS RÁPIDO, MAS PODE ANULAR A VOLTA. NA CHUVA, O PNEU CERTO DECIDE.</p>
+        </div>
+    </div>
+
+    <!-- ========== TELA DE CORRIDA ========== -->
     <div id="race-screen" class="screen">
-        <!-- BARRA SUPERIOR -->
         <header class="top-bar">
             <div class="race-info">
-                <span id="gp-name">GP DE INTERLAGOS</span> | 
-                <span>VOLTA: <strong id="lap-counter">1/15</strong></span> |
-                <span id="weather-status">☀️ SECO (28°C)</span>
+                <span id="gp-name">GP</span> |
+                <span>VOLTA: <strong id="lap-counter">1/12</strong></span> |
+                <span id="weather-status">☀️ SECO</span> | <span id="track-wet">PISTA: 0%</span> | <span id="sc-flag" class="sc-flag"></span>
+                <span id="fastest-lap">VR: --</span>
+                <div class="forecast" id="forecast"></div>
             </div>
             <div class="speed-controls">
+                <button class="speed-btn" id="pause-btn" title="Espaço">⏸ PAUSA</button>
+                <button class="speed-btn" id="race-menu-btn" title="Voltar ao menu (a temporada fica salva)">MENU</button>
                 <button class="speed-btn active" data-speed="1">1X</button>
                 <button class="speed-btn" data-speed="2">2X</button>
                 <button class="speed-btn" data-speed="4">4X</button>
+                <button class="speed-btn" data-speed="8">8X</button>
             </div>
         </header>
 
-        <!-- ÁREA CENTRAL: TORRE DE TEMPOS + PISTA 2D -->
         <main class="main-arena">
-            <!-- TORRE DE CLASSIFICAÇÃO -->
             <aside class="leaderboard-panel">
                 <h3>CLASSIFICAÇÃO</h3>
-                <ul id="leaderboard-list">
-                    <!-- Preenchido via JS -->
-                </ul>
+                <div class="lb-inner"><ul id="leaderboard-list"></ul></div>
             </aside>
-
-            <!-- PISTA PIXEL ART -->
             <section class="track-container">
                 <canvas id="track-canvas" width="640" height="440"></canvas>
-                <div id="race-banner" class="hidden">BANDEIRA QUADRICULADA!</div>
+                <div id="race-banner" class="hidden"></div>
             </section>
         </main>
 
-        <!-- PAINEL INFERIOR: BOXES E TELEMETRIA DOS PILOTOS -->
         <footer class="pit-wall">
-            <!-- PILOTO 1 -->
-            <div class="driver-card" id="card-d1">
-                <div class="driver-header">
-                    <span class="pos-badge" id="d1-pos">P1</span>
-                    <span class="driver-title" id="d1-name">PILOTO 1</span>
-                    <span class="tyre-badge soft" id="d1-tyre">S</span>
-                </div>
-                
-                <div class="telemetry-bars">
-                    <div class="bar-row">
-                        <span>PNEU:</span>
-                        <div class="progress-bg"><div id="d1-wear-bar" class="progress-fill green" style="width: 100%"></div></div>
-                        <span id="d1-wear-text">100%</span>
-                    </div>
-                    <div class="bar-row">
-                        <span>BATERIA ERS:</span>
-                        <div class="progress-bg"><div id="d1-ers-bar" class="progress-fill blue" style="width: 100%"></div></div>
-                        <span id="d1-ers-text">100%</span>
-                    </div>
-                </div>
-
-                <div class="controls-row">
-                    <label>RITMO:</label>
-                    <button class="pace-btn" data-driver="0" data-pace="conserve">POUPAR</button>
-                    <button class="pace-btn active" data-driver="0" data-pace="normal">NORMAL</button>
-                    <button class="pace-btn" data-driver="0" data-pace="push">ATAQUE</button>
-                </div>
-
-                <div class="controls-row pit-row">
-                    <label>BOXES:</label>
-                    <button class="pit-btn soft" data-driver="0" data-tyre="SOFT">PIT [S]</button>
-                    <button class="pit-btn medium" data-driver="0" data-tyre="MEDIUM">PIT [M]</button>
-                    <button class="pit-btn hard" data-driver="0" data-tyre="HARD">PIT [H]</button>
-                    <span id="d1-pit-status" class="pit-status"></span>
-                </div>
-            </div>
-
-            <!-- LOG DE RÁDIO DA EQUIPE -->
+            <div class="driver-card" id="card-d1"></div>
             <div class="radio-panel">
                 <h3>RÁDIO DO ENGENHEIRO</h3>
-                <div id="radio-log" class="radio-messages">
-                    <p>> Bem-vindo ao Pit Wall! Monitore o desgaste dos pneus.</p>
-                </div>
-                <button id="restart-btn" class="retro-btn small hidden">NOVA CORRIDA</button>
+                <div id="radio-log" class="radio-messages"></div>
             </div>
-
-            <!-- PILOTO 2 -->
-            <div class="driver-card" id="card-d2">
-                <div class="driver-header">
-                    <span class="pos-badge" id="d2-pos">P2</span>
-                    <span class="driver-title" id="d2-name">PILOTO 2</span>
-                    <span class="tyre-badge medium" id="d2-tyre">M</span>
-                </div>
-                
-                <div class="telemetry-bars">
-                    <div class="bar-row">
-                        <span>PNEU:</span>
-                        <div class="progress-bg"><div id="d2-wear-bar" class="progress-fill green" style="width: 100%"></div></div>
-                        <span id="d2-wear-text">100%</span>
-                    </div>
-                    <div class="bar-row">
-                        <span>BATERIA ERS:</span>
-                        <div class="progress-bg"><div id="d2-ers-bar" class="progress-fill blue" style="width: 100%"></div></div>
-                        <span id="d2-ers-text">100%</span>
-                    </div>
-                </div>
-
-                <div class="controls-row">
-                    <label>RITMO:</label>
-                    <button class="pace-btn" data-driver="1" data-pace="conserve">POUPAR</button>
-                    <button class="pace-btn active" data-driver="1" data-pace="normal">NORMAL</button>
-                    <button class="pace-btn" data-driver="1" data-pace="push">ATAQUE</button>
-                </div>
-
-                <div class="controls-row pit-row">
-                    <label>BOXES:</label>
-                    <button class="pit-btn soft" data-driver="1" data-tyre="SOFT">PIT [S]</button>
-                    <button class="pit-btn medium" data-driver="1" data-tyre="MEDIUM">PIT [M]</button>
-                    <button class="pit-btn hard" data-driver="1" data-tyre="HARD">PIT [H]</button>
-                    <span id="d2-pit-status" class="pit-status"></span>
-                </div>
-            </div>
+            <div class="driver-card" id="card-d2"></div>
         </footer>
+        <p class="keys-help">
+            PAUSA [ESPAÇO] · VELOCIDADE [1-4] ·
+            PILOTO 1: RITMO [Q W E] · BOX S/M/H/INTER/CHUVA [A S D F G] · BOOST [Z] · ACEITAR PEDIDO [X] ·
+            PILOTO 2: RITMO [I O P] · BOX [J K L ; '] · BOOST [N] · ACEITAR PEDIDO [M]<br>
+            OVERTAKE MODE: ARMA SOZINHO NA LINHA DE DETECÇÃO SE O CARRO ESTÁ A MENOS DE 1 S DO DA FRENTE (VALE NA VOLTA SEGUINTE). BOOST: GASTA 30% DA BATERIA.<br>
+            FAIXA VERDE NA PISTA = ZONA DE MODO RETA (ASA ABERTA). SE O PILOTO ESQUECER DE FECHAR A ASA, O RÁDIO AVISA: USE POUPAR PARA REDUZIR O RISCO.
+            ANTES DA LARGADA, OS BOTÕES DE PNEU ESCOLHEM O PNEU DO GRID.
+        </p>
     </div>
 
+    <!-- ========== RESULTADOS ========== -->
+    <div id="results-modal" class="modal hidden">
+        <div class="modal-box">
+            <h2 id="results-title">RESULTADO</h2>
+            <div class="tabs" id="result-tabs">
+                <button class="tab active" data-tab="race">CORRIDA</button>
+                <button class="tab" data-tab="stewards">COMISSÁRIOS</button>
+                <button class="tab" data-tab="drivers">PILOTOS</button>
+                <button class="tab" data-tab="teams">CONSTRUTORES</button>
+            </div>
+            <div class="tab-body" id="tab-race"><table id="results-table"></table></div>
+            <div class="tab-body hidden" id="tab-stewards"><div id="stewards-summary" class="note-line"></div><table id="stewards-table"></table></div>
+            <div class="tab-body hidden" id="tab-drivers"><table id="standings-table"></table><p class="hint" id="lic-hint"></p></div>
+            <div class="tab-body hidden" id="tab-teams"><table id="teams-table"></table><div id="season-end" class="note-line"></div></div>
+            <div class="modal-actions">
+                <button id="next-gp-btn" class="retro-btn green small-btn">PRÓXIMO GP ▶</button>
+                <button id="menu-btn" class="retro-btn small-btn">MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="tracks.js"></script>
+    <script src="sim.js"></script>
+    <script src="stewards.js"></script>
+    <script src="weather.js"></script>
+    <script src="hazards.js"></script>
+    <script src="quali.js"></script>
+    <script src="season.js"></script>
+    <script src="art.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
